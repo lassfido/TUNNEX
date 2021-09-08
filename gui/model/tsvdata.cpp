@@ -20,6 +20,7 @@
 #include "model/tsvdata.h"
 #include <QTextStream>
 #include <QDebug>
+#include <QRegularExpression>
 
 using namespace WKB::model;
 
@@ -101,7 +102,7 @@ bool TSVData::validateFileStructure() {
 	QString seperator(QStringLiteral("\\s*"));
 	QString space(QStringLiteral("\\s*"));
 
-	QRegExp validator(space + number + seperator + number + space);
+	QRegularExpression validator(space + number + seperator + number + space);
 
 	if (!_fstream.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		_fstream.close();
@@ -112,10 +113,11 @@ bool TSVData::validateFileStructure() {
 	QString line;
 	while (!in.atEnd()) {
 		line = in.readLine();
+        QRegularExpressionMatch match = validator.match(line);
 		// Ignore whitelines
 		if (line.isEmpty())
 			continue;
-		if (!validator.exactMatch(line)) {
+		if (!match.hasMatch()) {
 			return false;
 		}
 	}

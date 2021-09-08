@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
 
-# TUNNEX 1.0.0 
+# TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
 
@@ -36,7 +36,7 @@ add_subdirectory(view)
 
 #-------------------------------------------------------------------------------
 # Set the search path to the current directory
-# This ui file can be either included by 
+# This ui file can be either included by
 # <AUTOUIC_SEARCH_PATH>/<path><ui_basename>.h or
 # <AUTOUIC_SEARCH_PATH>/<ui_basename>.h or
 # where path is in this directory
@@ -105,7 +105,7 @@ ADD_LIBRARY( gui OBJECT
   ${controller_HEADER}
   ${view_SRC}
   ${view_HEADER}
-  ${gui_GEN_MOC_HDRS} 
+  ${gui_GEN_MOC_HDRS}
   ${gui_GEN_UIS}
   ${gui_GEN_RCS}
   ${tunnex_RCS}
@@ -113,3 +113,5 @@ ADD_LIBRARY( gui OBJECT
 
 set_target_properties(gui PROPERTIES AUTOUIC ON)
 set_property(TARGET gui PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_link_libraries(gui PUBLIC Qt6::Core Qt6::Widgets Qt6::Gui Core5Compat
+    Qt6::StateMachine)

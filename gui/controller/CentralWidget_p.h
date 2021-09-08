@@ -46,6 +46,7 @@
 #include <QGridLayout>
 #include <QDialog>
 #include <QLineEdit>
+#include <QSharedPointer>
 
 #define AXIS_ADD_RANGE 0.05
 
@@ -340,8 +341,9 @@ void CentralWidgetPrivate::interIRCcorr(AbstractInterpol* inter)
 void CentralWidgetPrivate::plotGraph(QCustomPlot * plot,
 		AbstractXYDataFileModel* data, graphLayer l) Q_DECL_NOEXCEPT {
 	// Delete old data when no data is given
-	while (plot->graphCount() <= 2)
-		plot->addGraph();
+
+    while (plot->graphCount() <= 2)
+        Q_ASSERT(plot->addGraph() != nullptr);
 
 	if (data == Q_NULLPTR) {
 		plot->clearGraphs();
@@ -355,15 +357,13 @@ void CentralWidgetPrivate::plotGraph(QCustomPlot * plot,
 		return;
 	}
 
-
-
-
 	XYdata dData = data->getData();
 	dVector x, y;
 
 
 	// Everything right replot by clearing Graphs
-	plot->graph(l)->clearData();
+	//plot->graph(l)->clearPlo();
+    plot->graph(l)->data()->clear();
 	plot->replot();
 
 	// Fill it with data
@@ -375,7 +375,7 @@ void CentralWidgetPrivate::plotGraph(QCustomPlot * plot,
 
 	XYdata d = data->getData();
 
-	qSort(d.begin(), d.end(), [](QPointF &v1,QPointF &v2) {
+	std::sort(d.begin(), d.end(), [](QPointF &v1,QPointF &v2) {
 		return v1.x() < v2.x();
 	});
 	double startingMaterialEnergy = d.begin()->y();
@@ -389,8 +389,6 @@ void CentralWidgetPrivate::plotGraph(QCustomPlot * plot,
 		for (auto &i : *y)
 			convertToRel(i);
 	}
-
-
 
 	plot->graph(l)->addData(*x, *y);
 	// To Do: right labeling of axis
@@ -423,13 +421,13 @@ void CentralWidgetPrivate::plotGraph(QCustomPlot * plot,
 		yMax += yMax * AXIS_ADD_RANGE;
 		plot->xAxis->setRange(xMin, xMax);
 		plot->yAxis->setRange(yMin, yMax);
-		plot->graph(l)->setSelectable(true);
+		plot->graph(l)->setSelectable(QCP::stSingleData);
 		break;
 
 	case graphLayer::inter: {
 		plot->graph(l)->setLineStyle(QCPGraph::lsLine);
 		plot->graph(l)->setScatterStyle(QCPScatterStyle::ssNone);
-		plot->graph(l)->setSelectable(false);
+		plot->graph(l)->setSelectable(QCP::stNone);
 		break;
 	}
 
@@ -465,7 +463,7 @@ void CentralWidgetPrivate::reactiveModeChanged(const QVariant &mode)
 	QCPGraph* dataGraph = q->_ui->irc_cor->graph(graphLayer::data);
 	double startingMaterialEnergy = 0.0;
 	if (!dataGraph->data()->isEmpty()) {
-		startingMaterialEnergy = dataGraph->data()->first().value;
+        startingMaterialEnergy = dataGraph->data()->begin()->mainValue();
 	}
 
 	double xMin = xAxis()->range().lower;
@@ -493,19 +491,16 @@ void CentralWidgetPrivate::reactiveModeChanged(const QVariant &mode)
 			yValues2( { attemptEnergies[2], attemptEnergies[2] }), yValues3( {
 					attemptEnergies[3], attemptEnergies[3] });
 
-	graph(graphLayer::attempt0)->clearData();
+	graph(graphLayer::attempt0)->data()->clear();
 	graph(graphLayer::attempt0)->addData(xValues, yValues0);
 
-
-	graph(graphLayer::attempt1)->clearData();
+    graph(graphLayer::attempt1)->data()->clear();
 	graph(graphLayer::attempt1)->addData(xValues, yValues1);
 
-
-	graph(graphLayer::attempt2)->clearData();
+    graph(graphLayer::attempt2)->data()->clear();
 	graph(graphLayer::attempt2)->addData(xValues, yValues2);
 
-
-	graph(graphLayer::attempt3)->clearData();
+    graph(graphLayer::attempt3)->data()->clear();
 	graph(graphLayer::attempt3)->addData(xValues, yValues3);
 
 	q->_ui->irc_cor->replot();
@@ -572,22 +567,26 @@ void CentralWidgetPrivate::showContextMenu(const QPoint &point,
 void CentralWidgetPrivate::resetAxisToStandard(QCustomPlot *plot) {
 	if (!plot->graph(graphLayer::data))
 		return;
-	QList < QCPData > data = plot->graph(graphLayer::data)->data()->values();
+
+    QSharedPointer<QCPGraphDataContainer> dataContainer =
+    plot->graph(graphLayer::data)->data();
 	// If no data do nothing
-	if (data.isEmpty())
-		return;
+    if(dataContainer->isEmpty())
+        return;
 
 	// Data is already sorted by x
-	double xMin = data.first().key, xMax = data.last().key;
+	double xMin = dataContainer->begin()->key,
+    xMax = dataContainer->end()->key;
 
 	// sort by y
-	auto sortY = [](const QCPData &d1,const QCPData &d2) {
+	auto sortY = [](const QCPGraphData &d1,const QCPGraphData &d2) {
 		return d1.value < d2.value;
 	};
 
-	qSort(data.begin(), data.end(), sortY);
+	std::sort(dataContainer->begin(), dataContainer->end(), sortY);
 
-	double yMin = data.first().value, yMax = data.last().value;
+	double yMin = dataContainer->begin()->value,
+    yMax = dataContainer->end()->value;
 	xMin += xMin * AXIS_ADD_RANGE;
 	xMax += xMax * AXIS_ADD_RANGE;
 	yMin += yMin * AXIS_ADD_RANGE;
@@ -634,7 +633,7 @@ void CentralWidgetPrivate::exportGraph(QCustomPlot *plot) {
 
 	QString oldPath = s.value("centralWidget/oldPath").toString();
 	if (oldPath.isEmpty() | !QFile::exists(oldPath))
-		oldPath = QStandardPaths::DesktopLocation;
+        oldPath = *QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).begin();
 	QString filename = QFileDialog::getSaveFileName(q, tr("Export Graph"),
 			oldPath,
 #ifdef QT_NO_PRINTER
@@ -653,7 +652,7 @@ void CentralWidgetPrivate::exportGraph(QCustomPlot *plot) {
 		if (plot->saveBmp(filename, width, height, scale))
 			s.setValue("centralWidget/oldPath", filename);
 	} else if (filename.contains(".pdf")) {
-		if (plot->savePdf(filename, true, width, height))
+		if (plot->savePdf(filename, width, height))
 			s.setValue("centralWidget/oldPath", filename);
 	} else
 		qWarning() << "Unknown file format";

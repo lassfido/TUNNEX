@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
 
-# TUNNEX 1.0.0 
+# TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
 ###
@@ -21,7 +21,7 @@
 ###
 ## Due to Mac OSX we need to keep compatibility with CMake 2.6
 # see http://www.cmake.org/Wiki/CMake_Policies
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.16.0)
 
 
 include(CheckCXXCompilerFlag)
@@ -313,4 +313,5 @@ ENDIF(WIN32)
 
 set_property(TARGET alglib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+target_link_libraries(alglib PUBLIC Qt6::Core)
 

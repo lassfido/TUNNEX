@@ -23,6 +23,8 @@
 #include <QWidget>
 #include <QVector>
 #include <QModelIndex>
+#include "model/AbstractXYDataFileModel.h"
+
 
 
 QT_BEGIN_NAMESPACE
@@ -36,7 +38,6 @@ namespace WKB {
         class CentralWidgetPrivate;
     }
     namespace model {
-        class AbstractXYDataFileModel;
  
         class AbstractInterpol;
 
@@ -47,8 +48,6 @@ namespace WKB {
     
     namespace widgets {
 
- 
-        
         namespace Ui {
             class CentralWidget;
         }

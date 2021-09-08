@@ -13,10 +13,10 @@
 
 # You should have received a copy of the GNU General Public License
 # along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
-# TUNNEX 1.0.0 
+# TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.16.0)
 
 project(tunnex)
 
@@ -52,7 +52,7 @@ ENDIF(WITH_TESTING)
 
 IF(APPLE)
 	if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-		set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9 CACHE STRING "Minimum Version of MacOS supported" FORCE)
+		set(CMAKE_OSX_DEPLOYMENT_TARGET 10.11 CACHE STRING "Minimum Version of MacOS supported" FORCE)
 	endif(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
 ENDIF(APPLE)
 
@@ -76,8 +76,6 @@ IF(DEPLOY)
 	ENDIF(WIN32)
 
 ENDIF(DEPLOY)
-
-
 
 
 # app executable name
@@ -125,20 +123,27 @@ function(add_sources)
 endfunction(add_sources)
 
 
-# Qt 5 
-set(QT_MIN_VERSION "5.6.0")
+# Qt 6
+#set(QT_MIN_VERSION "6.0.0")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
 # Find the QtWidgets library
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
-include_directories("${Qt5Core_INCLUDE_DIRS}" "${Qt5Widgets_INCLUDE_DIRS}" "${Qt5PrintSupport_INCLUDE_DIRS}")
+find_package(Qt6 COMPONENTS Core
+    Widgets
+    Gui
+    PrintSupport
+    Core5Compat
+    StateMachine
+    REQUIRED)
+#find_package(Qt5Widgets REQUIRED)
+#find_package(Qt5Core REQUIRED)
+#find_package(Qt5PrintSupport REQUIRED)
+#include_directories("${Qt5Core_INCLUDE_DIRS}" "${Qt5Widgets_INCLUDE_DIRS}" "${Qt5PrintSupport_INCLUDE_DIRS}")
 
-# ALGLIB if installed 
+# ALGLIB if installed
 find_package(ALGLIB QUIET)
 # IF customplot is installed
 find_package(QCustomPlot QUIET)
@@ -146,7 +151,8 @@ find_package(QCustomPlot QUIET)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQURIED  ON)
 
 if(WIN32)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Tunnex")

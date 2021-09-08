@@ -69,7 +69,7 @@ void AbstractInterpol::recomputeInterpol(){
      2 data points between existing points */
     
     dVector xValues=_data->getXValues();
-    qSort(xValues->begin(), xValues->end());
+    std::sort(xValues->begin(), xValues->end());
     XYdata d;
     for(auto n=xValues->begin(); n != xValues->end()-1; n++){
 		double diff = std::fabs(*n - *(n + 1));

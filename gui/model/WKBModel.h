@@ -24,10 +24,6 @@
 #include <QSharedPointer>
 #include <functional>
 
-// Forward declaration qt
-template <class T>
-class QVector;
-
 
 namespace WKB{
 namespace model {

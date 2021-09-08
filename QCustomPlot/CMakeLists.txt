@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
 
-# TUNNEX 1.0.0 
+# TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
 ###
@@ -32,9 +32,9 @@ include(CheckCXXCompilerFlag)
 ###
 project(qcustomplot_CPP)
 
-set(qcustomplot_CPP_VERSION_MAJOR "1")
-set(qcustomplot_CPP_VERSION_MINOR „3“)
-set(qcustomplot_CPP_VERSION_PATCH „1“)
+set(qcustomplot_CPP_VERSION_MAJOR "2")
+set(qcustomplot_CPP_VERSION_MINOR „1“)
+set(qcustomplot_CPP_VERSION_PATCH „0“)
 set(qcustomplot_CPP_VERSION "${qcustomplot_CPP_VERSION_MAJOR}.${qcustomplot_CPP_VERSION_MINOR}.${qcustomplot_CPP_VERSION_PATCH}")
 
 enable_testing()
@@ -236,10 +236,12 @@ set_target_properties(qcustomplot PROPERTIES
   COMPILE_FLAGS "${qcustomplot_c_flags} ${qcustomplot_cxx_flags}"
 )
 
-target_link_libraries(qcustomplot 
-"${Qt5Core_LIBRARIES}" 
-"${Qt5Widgets_LIBRARIES}"
-"${Qt5PrintSupport_LIBRARIES}")
+target_link_libraries(qcustomplot
+    PRIVATE
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::PrintSupport
+    )
 
 set_target_properties(qcustomplot PROPERTIES
 	VERSION "${qcustomplot_CPP_VERSION}"

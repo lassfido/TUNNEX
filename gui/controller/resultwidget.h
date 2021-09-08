@@ -30,7 +30,6 @@
 QT_BEGIN_NAMESPACE
 
 class QHBoxLayout;
-class QStringList;
 
 
 QT_END_NAMESPACE

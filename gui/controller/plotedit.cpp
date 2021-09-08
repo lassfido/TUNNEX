@@ -101,17 +101,18 @@ if (event->buttons() == Qt::LeftButton) {
 			//double xd=xAxis->pixelToCoord((double) x);
 			double yd = yAxis->pixelToCoord((double) y);
 			QVector<double> xv, yv;
-			const QCPDataMap* data = selection.first()->data();
-			xv.append(data->begin().key());
+			QSharedPointer<QCPGraphDataContainer> data = selection.first()->data();
+			xv.append(data->begin()->key);
 			yv.append(yd);
 
 			selection.first()->setData(xv, yv);
 			_plot->replot();
 			this->_plot->setInteraction(QCP::iRangeDrag, true);
-			emit (plotDataChanged());break
+			emit (plotDataChanged());
+            break;
 ;		}
 		default: {
-			selection.first()->setSelected(false);
+			//selection.begin()->setSelected(false);
 			break;
 		}
 	}
@@ -122,13 +123,13 @@ if (event->buttons() == Qt::LeftButton) {
 void PlotEditPrivate::dataChanged() {
 	XYdata dData;
 	for (int i = 0; i < _plot->graphCount(); i++) {
-		QCPGraph* graph = _plot->graph(i);
-		const QCPDataMap* data = graph->data();
+		/*QCPGraph* graph = _plot->graph(i);
+		const QSharedPointer<QCPGraphDataContainer> data = graph->data();
 
-		QList<double> keys = data->keys();
+		QList<double> keys = data->;
 
 		for (auto &k : keys)
-			dData.push_back((QPointF(k, data->value(k).value)));
+			dData.push_back((QPointF(k, data->value(k).value)));*/
 
 	}
 	this->_data->setData(dData);

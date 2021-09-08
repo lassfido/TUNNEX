@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
 
-# TUNNEX 1.0.0 
+# TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
 ###
@@ -21,7 +21,7 @@
 ###
 ## Due to Mac OSX we need to keep compatibility with CMake 2.6
 # see http://www.cmake.org/Wiki/CMake_Policies
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.16)
 
 
 include(CheckCXXCompilerFlag)
@@ -240,7 +240,7 @@ set_property(TARGET math PROPERTY CXX_STANDARD 11)
 
 
 
-target_link_libraries(math "${Qt5Core_LIBRARIES}")
+target_link_libraries(math PUBLIC Qt6::Core)
 
 set_target_properties(math PROPERTIES
 	VERSION "${math_CPP_VERSION}"
