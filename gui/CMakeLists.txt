@@ -57,6 +57,10 @@ add_definitions(-DUSE_MATH_LIB)
 add_definitions(-DQCUSTOMPLOT_USE_LIBRARY)
 add_definitions(-DUSE_ALG_LIB)
 
+if(LIBSSH2)
+    add_definitions(-DUSE_LIBSSH2)
+endif(LIBSSH2)
+
 #--------------------------------------------------------------------------------
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
@@ -111,7 +115,24 @@ ADD_LIBRARY( gui OBJECT
   ${tunnex_RCS}
 )
 
+
 set_target_properties(gui PROPERTIES AUTOUIC ON)
 set_property(TARGET gui PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(gui PUBLIC Qt6::Core Qt6::Widgets Qt6::Gui Core5Compat
-    Qt6::StateMachine)
+target_link_libraries(gui PUBLIC Qt6::Core
+    Qt6::Widgets
+    Qt6::Gui
+    Core5Compat
+    Qt6::StateMachine
+    )
+
+if(LIBSSH2)
+	add_dependencies(gui qlibssh2)
+	include_directories(${CMAKE_BINARY_DIR}/upstream/include)
+    target_link_libraries(gui PRIVATE
+		${CMAKE_BINARY_DIR}/upstream/lib/libqlibssh2${CMAKE_STATIC_LIBRARY_SUFFIX}
+        PUBLIC
+        Qt6::Network
+        )
+
+endif(LIBSSH2)
+

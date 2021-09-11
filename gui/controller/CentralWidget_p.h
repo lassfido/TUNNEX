@@ -47,6 +47,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QSharedPointer>
+#include <QLibssh2/Ssh2Client.h>
 
 #define AXIS_ADD_RANGE 0.05
 

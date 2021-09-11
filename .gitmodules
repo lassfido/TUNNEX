@@ -1,0 +1,4 @@
+[submodule "qlibssh2"]
+	path = upstream/qlibssh2
+	url = https://github.com/lassfido/qlibssh2.git
+	branch = qt6-support

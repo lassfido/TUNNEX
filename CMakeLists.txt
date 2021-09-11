@@ -17,7 +17,7 @@
 # Copyright (c) Henrik Quanz
 
 cmake_minimum_required(VERSION 3.16.0)
-
+cmake_policy(SET CMP0114 NEW)
 project(tunnex)
 
 #------------------------------------------------------------------------------
@@ -25,10 +25,12 @@ project(tunnex)
 #				Options
 #
 #------------------------------------------------------------------------------
-option(DEPLOY "If set the app will be deployed using qt tools" OFF)
+option(DEPLOY  "If set the app will be deployed using qt tools" OFF)
+option(LIBSSH2 "Build with libssh2 support" ON)
 #------------------------------------------------------------------------------
 
 include(CheckCXXCompilerFlag)
+include(ExternalProject)
 
 
 IF( NOT CMAKE_BUILD_TYPE )
@@ -45,6 +47,22 @@ IF(deploy)
 ELSE(deploy)
 	SET(should_deploy NO)
 ENDIF(deploy)
+
+IF(LIBSSH2)
+    set(CMAKE_ARGS "-DCMAKE_PREFIX_PATH=\'${CMAKE_PREFIX_PATH}\'")
+    ExternalProject_Add(qlibssh2
+        SOURCE_DIR ${CMAKE_SOURCE_DIR}/upstream/qlibssh2
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/upstream
+                   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                   -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+        CMAKE_CACHE_ARGS
+            -DCMAKE_PREFIX_PATH:STRING=${CMAKE_PREFIX_PATH}
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
+
+        )
+ENDIF(LIBSSH2)
 
 IF(WITH_TESTING)
 	enable_testing()
@@ -135,6 +153,7 @@ find_package(Qt6 COMPONENTS Core
     Widgets
     Gui
     PrintSupport
+    Network
     Core5Compat
     StateMachine
     REQUIRED)
