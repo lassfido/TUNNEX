@@ -239,8 +239,13 @@ set_target_properties(math PROPERTIES
 set_property(TARGET math PROPERTY CXX_STANDARD 11)
 
 
-
-target_link_libraries(math PUBLIC Qt6::Core)
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(math PRIVATE
+        Qt6::Core)
+else()
+    target_link_libraries(math PRIVATE
+        Qt5::Core)
+endif()
 
 set_target_properties(math PROPERTIES
 	VERSION "${math_CPP_VERSION}"

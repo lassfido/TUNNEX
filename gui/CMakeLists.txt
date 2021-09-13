@@ -118,21 +118,33 @@ ADD_LIBRARY( gui OBJECT
 
 set_target_properties(gui PROPERTIES AUTOUIC ON)
 set_property(TARGET gui PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(gui PUBLIC Qt6::Core
-    Qt6::Widgets
-    Qt6::Gui
-    Core5Compat
-    Qt6::StateMachine
-    )
 
 if(LIBSSH2)
 	add_dependencies(gui qlibssh2)
 	include_directories(${CMAKE_BINARY_DIR}/upstream/include)
     target_link_libraries(gui PRIVATE
 		${CMAKE_BINARY_DIR}/upstream/lib/libqlibssh2${CMAKE_STATIC_LIBRARY_SUFFIX}
-        PUBLIC
-        Qt6::Network
-        )
-
+    )
+    if(${QT_MAJOR_VERSION} EQUAL 6)
+        target_link_libraries(gui PUBLIC
+            Qt6::Network
+            )
+    else()
+        target_link_libraries(gui PUBLIC
+            Qt5::Network
+            )
+    endif()
 endif(LIBSSH2)
 
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(gui PUBLIC
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::Gui
+        Qt6::StateMachine)
+else()
+    target_link_libraries(gui PUBLIC
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::Gui)
+endif()

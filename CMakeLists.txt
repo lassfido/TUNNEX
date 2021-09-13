@@ -149,14 +149,24 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 # Find the QtWidgets library
+set(QT_MAJOR_VERSION 6)
 find_package(Qt6 COMPONENTS Core
     Widgets
     Gui
     PrintSupport
     Network
-    Core5Compat
     StateMachine
-    REQUIRED)
+    QUIET)
+
+if (NOT Qt6_FOUND)
+    set(QT_MAJOR_VERSION 5)
+    find_package(Qt5 5.15 COMPONENTS Core
+        Gui
+        Network
+        PrintSupport
+        REQUIRED)
+endif()
+message(STATUS "Qt Version ${QT_MAJOR_VERSION} used")
 #find_package(Qt5Widgets REQUIRED)
 #find_package(Qt5Core REQUIRED)
 #find_package(Qt5PrintSupport REQUIRED)

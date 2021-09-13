@@ -236,12 +236,17 @@ set_target_properties(qcustomplot PROPERTIES
   COMPILE_FLAGS "${qcustomplot_c_flags} ${qcustomplot_cxx_flags}"
 )
 
-target_link_libraries(qcustomplot
-    PRIVATE
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::PrintSupport
-    )
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(qcustomplot PRIVATE
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::PrintSupport)
+else()
+    target_link_libraries(qcustomplot PRIVATE
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::PrintSupport)
+endif()
 
 set_target_properties(qcustomplot PROPERTIES
 	VERSION "${qcustomplot_CPP_VERSION}"
