@@ -77,12 +77,17 @@ if(MSVC)
     target_link_libraries( ${APP_NAME} ${qtmain_lib})
 endif(MSVC)
 
-target_link_libraries( ${APP_NAME}
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::PrintSupport
-    Qt6::StateMachine
-    math alglib qcustomplot)
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(${APP_NAME} PUBLIC
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::Gui
+        Qt6::StateMachine
+        math alglib qcustomplot)
+else()
+    target_link_libraries(${APP_NAME} PUBLIC Qt5::Core Qt5::Widgets Qt5::Gui
+        math alglib qcustomplot)
+endif()
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
@@ -225,7 +230,12 @@ set_property(TARGET ${APP_NAME} PROPERTY CXX_STANDARD 11)
 
 # First get the path of the Library Location. Configuration does not matter
 # because the debug and the release library should be in the same directory
-get_target_property(QtCoreLocation Qt6::Core IMPORTED_LOCATION_DEBUG)
+if(${QT_MAJOR_VERSION} EQUAL 6)
+	get_target_property(QtCoreLocation Qt6::Core IMPORTED_LOCATION_DEBUG)
+else()
+	get_target_property(QtCoreLocation Qt5::Core IMPORTED_LOCATION_DEBUG)
+endif()
+
 get_filename_component(QT_LIB_LOCATION ${QtCoreLocation} DIRECTORY CACHE)
 if(MSVC_IDE)
 	# Minimum version that is supported (not tested)

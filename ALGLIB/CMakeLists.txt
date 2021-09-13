@@ -313,5 +313,9 @@ ENDIF(WIN32)
 
 set_property(TARGET alglib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(alglib PUBLIC Qt6::Core)
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(alglib PUBLIC Qt6::Core)
+else()
+    target_link_libraries(alglib PUBLIC Qt5::Core)
+endif()
 

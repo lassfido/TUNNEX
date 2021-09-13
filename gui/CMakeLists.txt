@@ -113,5 +113,15 @@ ADD_LIBRARY( gui OBJECT
 
 set_target_properties(gui PROPERTIES AUTOUIC ON)
 set_property(TARGET gui PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(gui PUBLIC Qt6::Core Qt6::Widgets Qt6::Gui Core5Compat
-    Qt6::StateMachine)
+if(${QT_MAJOR_VERSION} EQUAL 6)
+    target_link_libraries(gui PUBLIC
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::Gui
+        Qt6::StateMachine)
+else()
+    target_link_libraries(gui PUBLIC
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::Gui)
+endif()
