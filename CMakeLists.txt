@@ -16,8 +16,8 @@
 # TUNNEX 1.0.0
 # Copyright (c) Henrik Quanz
 
-cmake_minimum_required(VERSION 3.16.0)
-cmake_policy(SET CMP0114 NEW)
+cmake_minimum_required(VERSION 3.10.0)
+#cmake_policy(SET CMP0114 NEW)
 project(tunnex)
 
 #------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ find_package(Qt6 COMPONENTS Core
 
 if (NOT Qt6_FOUND)
     set(QT_MAJOR_VERSION 5)
-    find_package(Qt5 5.15 COMPONENTS Core
+    find_package(Qt5 5.9 COMPONENTS Core
         Gui
         Network
         PrintSupport

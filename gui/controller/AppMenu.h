@@ -95,6 +95,8 @@ Q_OBJECT
 	//! Slot is called when about is asked
 	void about();
 
+    void settings();
+
 
 	public:
 	//! Basic Constructor

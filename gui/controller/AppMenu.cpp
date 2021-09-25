@@ -20,6 +20,7 @@
 #include "controller/AppMenu.h"
 #include "controller/CentralWidget.h"
 #include "controller/mainwindow.h"
+#include "controller/SettingsDialog.h"
 #include <QMenu>
 #include <QApplication>
 #include <QScreen>
@@ -122,6 +123,7 @@ AppMenu::AppMenu(QWidget* parent) :
 
 	_help->addAction(QString(tr("About Qt")), this, SLOT(aboutQt()));
 	_help->addAction(QString(tr("About")), this, SLOT(about()));
+    _help->addAction(QString(tr("settings")),this, SLOT(settings()));
 
 	// Add shortcuts file menu
 	for (auto &action : _file->actions()) {
@@ -240,6 +242,13 @@ void AppMenu::about() {
 
 	QMessageBox::about(0, tr("About TUNNEX"), message);
 
+}
+
+void AppMenu::settings(){
+    widgets::SettingsDialog *settingsDialog =
+        new widgets::SettingsDialog(this);
+    settingsDialog->exec();
+    delete settingsDialog;
 }
 
 
