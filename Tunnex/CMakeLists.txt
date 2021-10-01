@@ -87,10 +87,12 @@ IF(LIBSSH2)
     if(${QT_MAJOR_VERSION} EQUAL 6)
         target_link_libraries(${APP_NAME} PUBLIC
             Qt6::Network
+            Libssh2::libssh2
             )
     else()
         target_link_libraries(${APP_NAME} PUBLIC
             Qt5::Network
+            Libssh2::libssh2
             )
     endif()
 ENDIF(LIBSSH2)

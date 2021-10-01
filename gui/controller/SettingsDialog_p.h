@@ -1,9 +1,21 @@
-//
-//  SettingsDialog_p.h
-//  tunnex
-//
-//  Created by Henrik Quanz on 14.09.21.
-//
+/* This file is part of TUNNEX.
+
+ TUNNEX is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ laster any later version.
+
+ TUNNEX is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with TUNNEX.  If not, see <http://www.gnu.org/licenses/>.
+
+ TUNNEX 1.0.0
+ Copyright (c) Henrik Quanz
+*/
 
 #ifndef SettingsDialog_p_h
 #define SettingsDialog_p_h
@@ -33,7 +45,6 @@ namespace WKB {
                 WKB::widgets::SettingsDialog *q_ptr;
                 QSettings _settings;
                 model::SettingsListModel *_model;
-                QHBoxLayout *_layout;
             public:
                 SettingsDialogPrivate(widgets::SettingsDialog *s) Q_DECL_NOEXCEPT;
                 ~SettingsDialogPrivate();
@@ -53,11 +64,11 @@ using namespace WKB::impldetail;
 
 SettingsDialogPrivate::SettingsDialogPrivate(WKB::widgets::SettingsDialog *s)
 Q_DECL_NOEXCEPT: q_ptr(s),
-    _model(new model::SettingsListModel()),
-    _layout(new QHBoxLayout){
+    _model(new model::SettingsListModel())
+    {
     Q_Q(WKB::widgets::SettingsDialog);
     q->_ui->setupUi(q);
-    q->_ui->settingsWidget->setLayout(_layout);
+
 
     // Setup Model
     widgets::HostSettings *hostSettings = new widgets::HostSettings(q);
@@ -78,7 +89,6 @@ Q_DECL_NOEXCEPT: q_ptr(s),
 
 SettingsDialogPrivate::~SettingsDialogPrivate(){
     delete _model;
-    delete _layout;
 }
 
 void SettingsDialogPrivate::accept(){
@@ -118,18 +128,15 @@ void SettingsDialogPrivate::on_selectionChanged(const QItemSelection &selected, 
     if(deselectedItems.count() >= 1){
         QModelIndex indexDeselected = deselectedItems.first();
         QSharedPointer<QWidget> deselectedWidget = _model->getWidget(indexDeselected);
-
-        if (deselectedWidget != nullptr){
-            _layout->removeWidget(deselectedWidget.get());
-        }
     }
 
     // Add widget to layout
     QModelIndex indexSelected = selectedItems.first();
+    if(!indexSelected.isValid())
+        return;
+
     QWidget *settingsWidget = q->_ui->settingsWidget;
     QSharedPointer<QWidget> toBeDisplayed = _model->getWidget(indexSelected);
-
-    _layout->addWidget(toBeDisplayed.get());
 
     // Resize SettingsDialog to fit the current widget and reset minimum size
     QSize settingsWidgetSize = q->_ui->settingsWidget->size();
@@ -140,8 +147,9 @@ void SettingsDialogPrivate::on_selectionChanged(const QItemSelection &selected, 
         expansionNeeded = settingsWidgetMinimumSize - settingsWidgetSize;
         QSize newMinimumSize = currentDialogSize + expansionNeeded;
         q->resize(newMinimumSize);
-        q->setMinimumSize(newMinimumSize);
+        q->setMinimumWidth(newMinimumSize.width() + 10);
     }
+    q->_ui->gridLayout->replaceWidget(settingsWidget, toBeDisplayed.get());
     toBeDisplayed->show();
 }
 

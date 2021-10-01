@@ -149,6 +149,12 @@ AppMenu::AppMenu(QWidget* parent) :
 
 }
 
+AppMenu::~AppMenu(){
+    delete _file;
+    delete _edit;
+    delete _view;
+    delete _help;
+}
 void AppMenu::newWindowHandler() {
 	mainWindow *w = newMainWindow();
 	w->show();
@@ -179,13 +185,12 @@ void AppMenu::connectMainWindow(mainWindow *w){
 	});
 #endif
 
-
 	// Connect the action triggered slot to main window
 	//connect(this, &AppMenu::triggered, w, &mainWindow::actionTriggered);
 
 }
 
-mainWindow* AppMenu::newMainWindow(){
+QPointer<mainWindow> AppMenu::newMainWindow(){
 	// If there is another mainWindow move new window a bit
 	QWidget *active = QApplication::activeWindow();
 	QPoint pos(0, 0);
@@ -246,7 +251,7 @@ void AppMenu::about() {
 
 void AppMenu::settings(){
     widgets::SettingsDialog *settingsDialog =
-        new widgets::SettingsDialog(this);
+        new widgets::SettingsDialog(QApplication::focusWidget());
     settingsDialog->exec();
     delete settingsDialog;
 }

@@ -80,7 +80,7 @@ Q_OBJECT
 
 	void connectMainWindow(mainWindow* w);
 
-	mainWindow* newMainWindow();
+	QPointer<mainWindow> newMainWindow();
 
 
 	public slots:
@@ -105,6 +105,7 @@ Q_OBJECT
 	 * @param parent the parent widget
 	 */
 	AppMenu(QWidget* parent = 0);
+    ~AppMenu();
 
 #ifdef Q_OS_MACX
 	static const QUndoGroup* getUndoGroup();

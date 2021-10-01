@@ -57,6 +57,12 @@ int main(int argc, char *argv[]) {
 	 because the app closes after the last main window quits.
 	 */
     int res=a->exec();
+#ifdef Q_OS_MACX
+    delete menu;
+#else
+    delete mainWindow;
+#endif
+
     delete a;
 	return res;
 }

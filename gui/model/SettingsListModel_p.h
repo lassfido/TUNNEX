@@ -29,7 +29,7 @@ namespace WKB::impldetail {
     private:
         Q_DECLARE_PUBLIC(model::SettingsListModel);
         model::SettingsListModel *q_ptr;
-        QMap<QVariant,QSharedPointer<widgets::AbstractSettingsWidget>> _data;
+        QMap<QString,QSharedPointer<widgets::AbstractSettingsWidget>> _data;
     };
 }
 
@@ -63,13 +63,13 @@ QSharedPointer<widgets::AbstractSettingsWidget> SettingsListModelPrivate::getWid
     if(!parent.isValid())
         return nullptr;
 
-    QVariant key = _data.keys()[parent.row()];
+    QString key = _data.keys()[parent.row()];
     return _data[key];
 }
 
 
 void SettingsListModelPrivate::setWidget(const QVariant &value,  widgets::AbstractSettingsWidget* widget) {
-    _data[value] = QSharedPointer<widgets::AbstractSettingsWidget>(widget);
+    _data[value.toString()] = QSharedPointer<widgets::AbstractSettingsWidget>(widget);
 }
 
 

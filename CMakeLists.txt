@@ -50,6 +50,7 @@ ENDIF(deploy)
 
 IF(LIBSSH2)
     set(CMAKE_ARGS "-DCMAKE_PREFIX_PATH=\'${CMAKE_PREFIX_PATH}\'")
+    find_package(libssh2 REQUIRED)
     ExternalProject_Add(qlibssh2
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/upstream/qlibssh2
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/upstream
